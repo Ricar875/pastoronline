@@ -180,6 +180,34 @@ button:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
   background: var(--navy-1); color:#fff; font-size:10.5px; font-weight:700;
   padding: 7px 12px; border-radius:8px; flex-shrink:0;
 }
+.btn-del{
+  width:26px; height:26px; border-radius:7px; flex-shrink:0;
+  background:#F4E4E0; display:flex; align-items:center; justify-content:center;
+}
+.btn-del svg{ width:13px; height:13px; stroke:#C0453A; }
+
+.add-card{
+  border: 1.5px dashed #C7D0DA; border-radius:12px;
+  padding: 10px 13px; margin-bottom:9px;
+  display:flex; align-items:center; justify-content:center; gap:7px;
+  color: var(--navy-1); font-size:12.5px; font-weight:700;
+  background: transparent;
+}
+.add-card svg{ width:15px; height:15px; stroke: var(--navy-1); }
+.add-form{
+  background: var(--card); border:1px solid var(--line); border-radius:12px;
+  padding: 12px 13px; margin-bottom:9px; display:none; flex-direction:column; gap:8px;
+}
+.add-form.open{ display:flex; }
+.add-form input, .add-form select{
+  border:1px solid var(--line); border-radius:8px; padding:9px 10px; font-size:13px; color: var(--text);
+}
+.add-form .row{ display:flex; gap:8px; }
+.add-form .row > *{ flex:1; }
+.add-form .btn-confirm{
+  background: var(--navy-1); color:#fff; font-size:12px; font-weight:700;
+  padding:9px; border-radius:8px;
+}
 
 /* BOTTOM NAV */
 .bottomnav{
@@ -230,7 +258,7 @@ button:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
 @media print{
   body *{ visibility:hidden; }
   .print-sheet, .print-sheet *{ visibility:visible; }
-  .print-sheet{ display:block; position:absolute; top:0; left:0; width:100%; background:#fff; color:#1a1a1a; padding:18mm; }
+  .print-sheet{ display:block; position:absolute; top:0; left:0; width:100%; background:#fff; color:#1a1a1a; padding:16mm; }
   .print-sheet h1{ font-size:22px; margin-bottom:2px; }
   .print-sheet .meta{ font-size:11px; color:#555; margin-bottom:20px; }
   .print-sheet .pq{ margin-bottom:16px; page-break-inside: avoid; }
@@ -238,6 +266,19 @@ button:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
   .print-sheet .pgoal{ font-size:12px; padding:4px 0; display:flex; gap:8px; }
   .print-sheet .pgoal .box{ width:11px; height:11px; border:1.3px solid #1a1a1a; flex-shrink:0; margin-top:2px; }
   .print-sheet .pgoal.done .box{ background:#1a1a1a; }
+
+  .month-page{ page-break-after: always; }
+  .month-page:last-child{ page-break-after: auto; }
+  .month-page h2{ font-size:19px; border-bottom:2px solid #1a1a1a; padding-bottom:6px; margin-bottom:10px; }
+  .month-page h3{ font-size:11.5px; text-transform:uppercase; letter-spacing:.04em; color:#555; margin:14px 0 6px; }
+  .fixed-item{ font-size:12.5px; padding:4px 0; display:flex; align-items:baseline; gap:6px; border-bottom:1px dotted #bbb; }
+  .fixed-item .fill-line{ flex:1; border-bottom:1px solid #999; height:1px; margin-left:6px; }
+  .misc-row{ font-size:12px; padding:6px 0; border-bottom:1px solid #ddd; color:#999; }
+  .week-grid{ display:grid; grid-template-columns: repeat(4, 1fr); gap:0; border:1px solid #999; margin-top:6px; }
+  .week-grid .wcol{ border-right:1px solid #999; }
+  .week-grid .wcol:last-child{ border-right:none; }
+  .week-grid .whead{ font-size:11px; font-weight:700; text-align:center; padding:5px 0; background:#f2f2f2; border-bottom:1px solid #999; }
+  .week-grid .wrow{ height:22px; border-bottom:1px solid #e2e2e2; }
 }
 </style>
 </head>
@@ -278,16 +319,40 @@ button:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
       <div class="section-title"><span class="dot"></span>MINHAS ATIVIDADES ATUAIS</div>
       <div class="sub-label" id="quarterSubLabel"><span class="dot"></span>4º TRIMESTRE (OUTUBRO - DEZEMBRO)</div>
       <div id="goalsWrap"></div>
+      <button class="add-card" id="showGoalForm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Adicionar meta</button>
+      <div class="add-form" id="goalForm">
+        <input type="text" id="newGoalTitle" placeholder="Nome da meta (ex: MUTIRÃO DE VISITAÇÃO)">
+        <div class="row">
+          <select id="newGoalType"><option value="tracked">Com progresso por igreja</option><option value="cta">Ação única (comissão)</option></select>
+        </div>
+        <button class="btn-confirm" id="confirmGoal">Adicionar</button>
+      </div>
     </div>
 
     <div class="section">
       <div class="section-title"><span class="dot"></span>MINHA AGENDA SEMANAL</div>
       <div id="agendaWrap"></div>
+      <button class="add-card" id="showAgendaForm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Adicionar compromisso</button>
+      <div class="add-form" id="agendaForm">
+        <div class="row">
+          <input type="text" id="newAgendaDay" placeholder="Dia, horário (ex: SEXTA, 20:00)">
+        </div>
+        <input type="text" id="newAgendaWhat" placeholder="Atividade (ex: Culto jovem - Sede)">
+        <button class="btn-confirm" id="confirmAgenda">Adicionar</button>
+      </div>
     </div>
 
     <div class="section">
       <div class="section-title"><span class="dot"></span>MINHAS IGREJAS</div>
       <div id="churchesWrap"></div>
+      <button class="add-card" id="showChurchForm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Adicionar igreja</button>
+      <div class="add-form" id="churchForm">
+        <input type="text" id="newChurchName" placeholder="Nome da igreja">
+        <div class="row">
+          <select id="newChurchStatus"><option value="ok">Em dia</option><option value="pending">Pendente</option></select>
+          <button class="btn-confirm" id="confirmChurch">Adicionar</button>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -357,16 +422,26 @@ const DATA = {
   ],
 
   agenda: [
-    { day:"QUARTA, 19:30", what:"Culto de Oração (Sede)" },
-    { day:"SÁBADO, 09:00", what:"Culto Divino (Igreja Alvorada)" },
-    { day:"DOMINGO, 15:00", what:"Visitação pastoral — Vista Alegre" },
+    { day:"SÁBADO", what:"Escola de Pregação (rotativo — uma igreja por semana)" },
+    { day:"DOMINGO, QUARTA E SEXTA", what:"Pequenos Grupos" },
+    { day:"SEGUNDA A SEXTA, 06:00–12:00", what:"Estudo e preparação de sermão / vida espiritual" },
+    { day:"TERÇA A SEXTA, TARDE", what:"Visitas pastorais" },
+    { day:"—", what:"" },
+    { day:"—", what:"" },
+    { day:"—", what:"" },
+    { day:"—", what:"" },
   ],
 
   churches: [
-    { id:"c1", name:"Sede Central", status:"ok" },
-    { id:"c2", name:"Alvorada", status:"ok" },
-    { id:"c3", name:"Vista Alegre", status:"pending" },
-    { id:"c4", name:"Nova Esperança", status:"ok" },
+    { id:"c1", name:"Igreja Central de Paulo Afonso", status:"ok" },
+    { id:"c2", name:"Igreja Vila Nova", status:"ok" },
+    { id:"c3", name:"Igreja de Delmiro Gouveia", status:"pending" },
+    { id:"c4", name:"Igreja de Petrolândia", status:"ok" },
+    { id:"c5", name:"Igreja de Glória (BA)", status:"pending" },
+    { id:"c6", name:"Igreja de Jatobá (PE)", status:"ok" },
+    { id:"c7", name:"Igreja de Rodelas", status:"pending" },
+    { id:"c8", name:"Igreja de Belém do São Francisco", status:"ok" },
+    { id:"c9", name:"Igreja de Chorrochó", status:"pending" },
   ]
 };
 
@@ -415,10 +490,34 @@ renderGoals();
 function renderAgenda(){
   const wrap = document.getElementById("agendaWrap");
   wrap.innerHTML = "";
-  DATA.agenda.forEach(a=>{
+  DATA.agenda.forEach((a, idx)=>{
     const el = document.createElement("div");
     el.className = "agenda-card";
-    el.innerHTML = `<div class="day">${a.day}</div><div class="what">${a.what}</div>`;
+    const isEmpty = a.day === "—" && !a.what;
+    el.style.display = "flex";
+    el.style.justifyContent = "space-between";
+    el.style.alignItems = "center";
+    el.style.gap = "10px";
+    el.innerHTML = `
+      <div style="flex:1; ${isEmpty ? 'color:#B7C1CB;' : ''}">
+        <div class="day">${isEmpty ? 'TOQUE PARA PREENCHER' : a.day}</div>
+        <div class="what">${a.what || 'Compromisso extra'}</div>
+      </div>
+      <button class="btn-del" data-idx="${idx}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>`;
+    el.querySelector("div").addEventListener("click", ()=>{
+      const newDay = prompt("Dia/horário:", a.day === "—" ? "" : a.day);
+      if(newDay === null) return;
+      const newWhat = prompt("Compromisso:", a.what);
+      if(newWhat === null) return;
+      a.day = newDay.toUpperCase() || "—";
+      a.what = newWhat;
+      renderAgenda();
+    });
+    el.querySelector(".btn-del").addEventListener("click", (e)=>{
+      e.stopPropagation();
+      DATA.agenda.splice(idx,1);
+      renderAgenda();
+    });
     wrap.appendChild(el);
   });
 }
@@ -433,11 +532,61 @@ function renderChurches(){
     el.innerHTML = `
       <div class="church-icon">${svgChurch()}</div>
       <div class="name">${c.name}<span class="status-dot ${c.status}"></span></div>
-      <button class="btn-quick">Quick Acces</button>`;
+      <button class="btn-quick">Quick Acces</button>
+      <button class="btn-del" data-id="${c.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>`;
+    el.querySelector(".btn-del").addEventListener("click", ()=>{
+      DATA.churches = DATA.churches.filter(x=>x.id!==c.id);
+      renderChurches();
+    });
     wrap.appendChild(el);
   });
 }
 renderChurches();
+
+/* ---------- toggles + add handlers ---------- */
+function toggleForm(btnId, formId){
+  document.getElementById(btnId).addEventListener("click", ()=>{
+    document.getElementById(formId).classList.toggle("open");
+  });
+}
+toggleForm("showGoalForm","goalForm");
+toggleForm("showAgendaForm","agendaForm");
+toggleForm("showChurchForm","churchForm");
+
+document.getElementById("confirmChurch").addEventListener("click", ()=>{
+  const name = document.getElementById("newChurchName").value.trim();
+  if(!name) return;
+  const status = document.getElementById("newChurchStatus").value;
+  DATA.churches.push({ id:"c"+Date.now(), name, status });
+  document.getElementById("newChurchName").value = "";
+  document.getElementById("churchForm").classList.remove("open");
+  renderChurches();
+});
+
+document.getElementById("confirmAgenda").addEventListener("click", ()=>{
+  const day = document.getElementById("newAgendaDay").value.trim();
+  const what = document.getElementById("newAgendaWhat").value.trim();
+  if(!day || !what) return;
+  DATA.agenda.push({ day: day.toUpperCase(), what });
+  document.getElementById("newAgendaDay").value = "";
+  document.getElementById("newAgendaWhat").value = "";
+  document.getElementById("agendaForm").classList.remove("open");
+  renderAgenda();
+});
+
+document.getElementById("confirmGoal").addEventListener("click", ()=>{
+  const title = document.getElementById("newGoalTitle").value.trim();
+  const type = document.getElementById("newGoalType").value;
+  if(!title) return;
+  if(type === "tracked"){
+    DATA.goals.push({ id:"g"+Date.now(), title: title.toUpperCase(), type:"tracked", done:false, totalChurches: DATA.churches.length, doneChurches:0, actions:["Adicionar Relatório","Ver Igrejas"] });
+  } else {
+    DATA.goals.push({ id:"g"+Date.now(), title: title.toUpperCase(), type:"cta", done:false, cta:"Iniciar Comissão" });
+  }
+  document.getElementById("newGoalTitle").value = "";
+  document.getElementById("goalForm").classList.remove("open");
+  renderGoals();
+});
 
 document.getElementById("saveBtn").addEventListener("click", ()=>{
   DATA.pastor.name = "Pr. " + document.getElementById("inscInput").value.replace(/^Pr\.\s*/i,"");
@@ -445,15 +594,38 @@ document.getElementById("saveBtn").addEventListener("click", ()=>{
   document.getElementById("avatar").textContent = initials(DATA.pastor.name);
 });
 
+const MONTHS = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+
 document.getElementById("exportBtn").addEventListener("click", ()=>{
   const sheet = document.getElementById("printSheet");
-  let html = `<h1>Plano Distrital — ${DATA.pastor.district}</h1>
-    <div class="meta">${DATA.pastor.name} · ${DATA.currentQuarter.label} · gerado em ${new Date().toLocaleDateString('pt-BR')}</div>
-    <div class="pq"><h2>Atividades atuais</h2>`;
-  DATA.goals.forEach(g=>{
-    html += `<div class="pgoal${g.done?' done':''}"><div class="box"></div><span>${g.title}</span></div>`;
+  let html = `<h1>Plano Distrital Anual — ${DATA.pastor.district}</h1>
+    <div class="meta">${DATA.pastor.name} · gerado em ${new Date().toLocaleDateString('pt-BR')}</div>`;
+
+  MONTHS.forEach(month=>{
+    html += `<div class="month-page"><h2>${month}</h2>`;
+
+    html += `<h3>Itens fixos do mês</h3>`;
+    html += `<div class="fixed-item"><div class="box" style="width:11px;height:11px;border:1.3px solid #1a1a1a;flex-shrink:0;"></div>Comissão de Igreja<span class="fill-line"></span></div>`;
+    html += `<div class="fixed-item"><div class="box" style="width:11px;height:11px;border:1.3px solid #1a1a1a;flex-shrink:0;"></div>Assinatura das Lições de Escola Sabatina<span class="fill-line"></span></div>`;
+    html += `<div class="fixed-item"><div class="box" style="width:11px;height:11px;border:1.3px solid #1a1a1a;flex-shrink:0;"></div>Semana de Oração (data: <span class="fill-line" style="max-width:120px;"></span>)</div>`;
+    if(month === "Abril"){
+      html += `<div class="fixed-item"><div class="box" style="width:11px;height:11px;border:1.3px solid #1a1a1a;flex-shrink:0;"></div>Evangelismo Público<span class="fill-line"></span></div>`;
+    }
+
+    html += `<h3>Atividades diversas do mês</h3>`;
+    for(let i=0;i<10;i++){ html += `<div class="misc-row">&nbsp;</div>`; }
+
+    html += `<h3>Grade semanal de anotações</h3>
+      <div class="week-grid">
+        <div class="wcol"><div class="whead">TERÇA</div>${'<div class="wrow"></div>'.repeat(9)}</div>
+        <div class="wcol"><div class="whead">QUARTA</div>${'<div class="wrow"></div>'.repeat(9)}</div>
+        <div class="wcol"><div class="whead">QUINTA</div>${'<div class="wrow"></div>'.repeat(9)}</div>
+        <div class="wcol"><div class="whead">SEXTA</div>${'<div class="wrow"></div>'.repeat(9)}</div>
+      </div>`;
+
+    html += `</div>`;
   });
-  html += `</div>`;
+
   sheet.innerHTML = html;
   window.print();
 });
@@ -492,4 +664,3 @@ aiInput.addEventListener("keydown",(e)=>{ if(e.key==="Enter") sendAiMessage(); }
 </script>
 </body>
 </html>
-
