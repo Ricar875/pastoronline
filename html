@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestor Pastoral · Planejamento Distrital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy-1: #1B3A5C;
+  --navy-2: #2E5577;
+  --navy-dark: #122844;
+  --gold: #D9A94F;
+  --gold-2: #C79433;
+  --bg: #EEF1F5;
+  --card: #FFFFFF;
+  --text: #1B3A5C;
+  --text-dim: #6C7C8C;
+  --line: #E1E6EC;
+  --green: #3FAE6B;
+  --radius: 14px;
+}
+*{box-sizing:border-box; margin:0; padding:0; font-family:'Inter',sans-serif;}
+body{ background: var(--bg); color: var(--text); padding-bottom: 86px; }
+button{ cursor:pointer; border:none; font-family:inherit; }
+button:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+.app{ max-width: 480px; margin:0 auto; }
+
+/* TOP STRIP */
+.topstrip{
+  background: var(--navy-dark);
+  color: #fff;
+  text-align:center;
+  font-size: 10.5px;
+  font-weight:700;
+  letter-spacing: .07em;
+  padding: 8px 10px;
+  text-transform:uppercase;
+}
+
+/* HEADER */
+.header{
+  background: linear-gradient(120deg, var(--navy-1), var(--navy-2));
+  color:#fff;
+  padding: 18px 18px 22px;
+  display:flex; align-items:center; gap:13px;
+}
+.avatar{
+  width:50px; height:50px; border-radius:50%;
+  background: #fff; flex-shrink:0; overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+  font-weight:700; color: var(--navy-1); font-size:16px;
+  border: 2px solid var(--gold);
+}
+.header-info{ flex:1; }
+.header-info h1{ font-size:17px; font-weight:700; }
+.badge{
+  display:inline-block; margin-top:5px;
+  background: var(--gold); color: var(--navy-dark);
+  font-size:11px; font-weight:700;
+  padding: 3px 10px; border-radius: 20px;
+}
+.logo-icon{ flex-shrink:0; }
+.logo-icon svg{ width:30px; height:34px; }
+
+/* CONTENT */
+.content{ padding: 16px 16px 0; }
+
+/* QUICK ROW */
+.quick-row{ display:flex; gap:10px; }
+.pdf-card{
+  flex:1.1; background: linear-gradient(155deg, var(--navy-1), var(--navy-dark));
+  border-radius: var(--radius); color:#fff;
+  padding: 16px 12px; text-align:center;
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+}
+.pdf-card svg{ width:26px; height:26px; }
+.pdf-card .label{ font-size:12px; font-weight:700; line-height:1.3; }
+.insc-card{
+  flex:1; background: var(--card); border:1px solid var(--line);
+  border-radius: var(--radius); padding: 12px 12px;
+  display:flex; flex-direction:column; gap:7px; justify-content:center;
+}
+.insc-card .eyebrow{ font-size:9.5px; font-weight:700; letter-spacing:.06em; color: var(--text-dim); text-transform:uppercase; }
+.insc-card input{
+  border:none; border-bottom: 1.5px solid var(--line);
+  font-size:13px; font-weight:600; color: var(--text); padding: 3px 0;
+}
+.insc-card input:focus{ outline:none; border-color: var(--navy-1); }
+.btn-save{
+  align-self:flex-end; background: var(--navy-1); color:#fff;
+  font-size:11px; font-weight:700; padding: 6px 14px; border-radius:8px;
+  margin-top:2px;
+}
+
+/* SECTION */
+.section{ margin-top: 24px; }
+.section-title{
+  display:flex; align-items:center; gap:7px;
+  font-size:12.5px; font-weight:800; letter-spacing:.03em;
+  text-transform:uppercase; color: var(--navy-1);
+  margin-bottom: 10px;
+}
+.section-title .dot{ width:7px; height:7px; border-radius:50%; background: var(--gold); flex-shrink:0; }
+
+.sub-label{
+  font-size:11px; font-weight:700; color: var(--text-dim);
+  text-transform:uppercase; letter-spacing:.03em;
+  margin: 14px 0 8px 2px;
+  display:flex; align-items:center; gap:6px;
+}
+.sub-label .dot{ width:5px; height:5px; border-radius:50%; background: var(--navy-2); }
+
+/* GOAL CARD */
+.goal-card{
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 13px 14px; margin-bottom:10px;
+  position:relative;
+}
+.goal-top{ display:flex; align-items:flex-start; gap:10px; }
+.chk{
+  width:21px; height:21px; border-radius:6px; flex-shrink:0;
+  border: 1.6px solid #C7D0DA; margin-top:1px;
+  display:flex; align-items:center; justify-content:center;
+}
+.chk svg{ width:13px; height:13px; opacity:0; }
+.goal-card.done .chk{ background: var(--navy-1); border-color: var(--navy-1); }
+.goal-card.done .chk svg{ opacity:1; stroke:#fff; }
+.goal-title{ font-size:13px; font-weight:700; letter-spacing:.01em; flex:1; }
+.gold-check{
+  position:absolute; top:11px; right:12px;
+  width:20px; height:20px; border-radius:50%; background: var(--gold);
+  display:flex; align-items:center; justify-content:center;
+}
+.gold-check svg{ width:12px; height:12px; stroke:#fff; }
+
+.progress-track{
+  height:7px; border-radius:6px; background:#E4E9EF; margin: 10px 0 6px; overflow:hidden;
+}
+.progress-fill{ height:100%; background: linear-gradient(90deg, var(--navy-2), var(--navy-1)); border-radius:6px; }
+.progress-meta{ display:flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; color: var(--text-dim); margin-bottom:10px; }
+.progress-meta svg{ width:13px; height:13px; stroke: var(--green); }
+
+.goal-actions{ display:flex; gap:8px; }
+.goal-actions button{
+  flex:1; background: var(--navy-1); color:#fff;
+  font-size:11px; font-weight:700; padding: 9px 6px; border-radius:9px;
+}
+.goal-actions button.alt{ background: var(--navy-2); }
+
+.btn-cta-gold{
+  width:100%; margin-top:4px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-2));
+  color: var(--navy-dark); font-size:12px; font-weight:800;
+  padding: 11px; border-radius:9px; letter-spacing:.02em;
+}
+
+/* AGENDA */
+.agenda-card{
+  background: var(--card); border:1px solid var(--line); border-radius: 12px;
+  padding: 12px 14px; margin-bottom: 9px;
+}
+.agenda-card .day{ font-size:10.5px; font-weight:800; color: var(--navy-1); letter-spacing:.04em; }
+.agenda-card .what{ font-size:13px; font-weight:500; color: var(--text); margin-top:3px; }
+.agenda-card .what b{ font-weight:700; }
+
+/* CHURCHES */
+.church-row{
+  display:flex; align-items:center; gap:11px;
+  background: var(--card); border:1px solid var(--line); border-radius:12px;
+  padding: 11px 13px; margin-bottom:9px;
+}
+.church-icon{ width:18px; height:18px; flex-shrink:0; stroke: var(--navy-1); }
+.church-row .name{ flex:1; font-size:13.5px; font-weight:700; display:flex; align-items:center; gap:7px; }
+.status-dot{ width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+.status-dot.ok{ background: var(--green); }
+.status-dot.pending{ background: var(--gold); }
+.btn-quick{
+  background: var(--navy-1); color:#fff; font-size:10.5px; font-weight:700;
+  padding: 7px 12px; border-radius:8px; flex-shrink:0;
+}
+
+/* BOTTOM NAV */
+.bottomnav{
+  position:fixed; bottom:0; left:0; right:0;
+  background:#fff; border-top:1px solid var(--line);
+  display:flex; justify-content:space-around; align-items:center;
+  padding: 8px 4px 10px; z-index:30;
+}
+.navitem{
+  display:flex; flex-direction:column; align-items:center; gap:3px;
+  color: var(--text-dim); font-size:9.5px; font-weight:600;
+}
+.navitem svg{ width:20px; height:20px; }
+.navitem.active{ color: var(--navy-1); }
+.navitem.active svg{ stroke: var(--gold); }
+
+/* AI FAB */
+.fab{ position:fixed; bottom:78px; right:18px; z-index:40; }
+.fab button{
+  width:52px; height:52px; border-radius:50%;
+  background: var(--gold); color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow: 0 6px 18px rgba(0,0,0,.25);
+}
+.fab svg{ width:23px; height:23px; }
+
+/* AI PANEL */
+.ai-overlay{ position:fixed; inset:0; background: rgba(10,20,30,.55); display:none; align-items:flex-end; justify-content:center; z-index:50; }
+.ai-overlay.open{ display:flex; }
+.ai-panel{ width:100%; max-width:480px; max-height:80vh; background:#fff; border-radius:18px 18px 0 0; display:flex; flex-direction:column; }
+.ai-head{ display:flex; justify-content:space-between; align-items:center; padding:15px 17px; border-bottom:1px solid var(--line); }
+.ai-head h3{ font-size:15px; font-weight:800; color: var(--navy-1); }
+.ai-head .sub{ font-size:10.5px; color: var(--text-dim); margin-top:2px; }
+.ai-close svg{ width:18px; height:18px; stroke: var(--text-dim); }
+.ai-body{ flex:1; overflow-y:auto; padding:14px 17px; display:flex; flex-direction:column; gap:10px; }
+.ai-msg{ max-width:85%; padding:10px 13px; border-radius:13px; font-size:13px; line-height:1.5; }
+.ai-msg.bot{ background:#F1F4F8; color:var(--text); align-self:flex-start; }
+.ai-msg.user{ background: var(--navy-1); color:#fff; align-self:flex-end; }
+.ai-msg.loading{ color: var(--text-dim); font-size:12px; }
+.ai-suggest{ display:flex; flex-wrap:wrap; gap:6px; padding:0 17px 10px; }
+.ai-suggest button{ font-size:10.5px; padding:6px 10px; border:1px solid var(--line); border-radius:18px; color: var(--text-dim); background:#fff; }
+.ai-input-row{ display:flex; gap:8px; padding:10px 13px; border-top:1px solid var(--line); }
+.ai-input-row input{ flex:1; background:#F1F4F8; border:1px solid var(--line); border-radius:18px; padding:10px 14px; font-size:13px; }
+.ai-input-row button{ width:40px; height:40px; border-radius:50%; background: var(--navy-1); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.ai-input-row button svg{ width:16px; height:16px; stroke:#fff; }
+
+.print-sheet{ display:none; }
+@media print{
+  body *{ visibility:hidden; }
+  .print-sheet, .print-sheet *{ visibility:visible; }
+  .print-sheet{ display:block; position:absolute; top:0; left:0; width:100%; background:#fff; color:#1a1a1a; padding:18mm; }
+  .print-sheet h1{ font-size:22px; margin-bottom:2px; }
+  .print-sheet .meta{ font-size:11px; color:#555; margin-bottom:20px; }
+  .print-sheet .pq{ margin-bottom:16px; page-break-inside: avoid; }
+  .print-sheet .pq h2{ font-size:14px; border-bottom:1.3px solid #1a1a1a; padding-bottom:5px; margin-bottom:8px; }
+  .print-sheet .pgoal{ font-size:12px; padding:4px 0; display:flex; gap:8px; }
+  .print-sheet .pgoal .box{ width:11px; height:11px; border:1.3px solid #1a1a1a; flex-shrink:0; margin-top:2px; }
+  .print-sheet .pgoal.done .box{ background:#1a1a1a; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="topstrip" id="topStrip">Planejamento Distrital · Associação Bahia Norte</div>
+
+  <div class="header">
+    <div class="avatar" id="avatar">PR</div>
+    <div class="header-info">
+      <h1 id="pastorName">Pr. Ricardo Guillermo</h1>
+      <div class="badge" id="districtBadge">Distrito: Submédio São Francisco</div>
+    </div>
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 28" fill="none" stroke="#D9A94F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 1c3 4 5 7 5 11a5 5 0 0 1-10 0c0-2 1-3.5 2-5"/>
+        <path d="M12 27v-9"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="quick-row">
+      <button class="pdf-card" id="exportBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M9 15h6"/><path d="M9 18h3"/></svg>
+        <div class="label" id="pdfLabel">GERAR PLANO<br>DISTRITAL 2026 (PDF)</div>
+      </button>
+      <div class="insc-card">
+        <div class="eyebrow">Inscrição Pastoral</div>
+        <input type="text" id="inscInput" value="Pr. Ricardo">
+        <button class="btn-save" id="saveBtn">SALVAR</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot"></span>MINHAS ATIVIDADES ATUAIS</div>
+      <div class="sub-label" id="quarterSubLabel"><span class="dot"></span>4º TRIMESTRE (OUTUBRO - DEZEMBRO)</div>
+      <div id="goalsWrap"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot"></span>MINHA AGENDA SEMANAL</div>
+      <div id="agendaWrap"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot"></span>MINHAS IGREJAS</div>
+      <div id="churchesWrap"></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="fab"><button id="aiFab" aria-label="Assistente pastoral">
+  <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+</button></div>
+
+<div class="ai-overlay" id="aiOverlay">
+  <div class="ai-panel">
+    <div class="ai-head">
+      <div><h3>Conselheiro Pastoral</h3><div class="sub">Sugestões para o planejamento</div></div>
+      <button class="ai-close" id="aiClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+    </div>
+    <div class="ai-body" id="aiBody">
+      <div class="ai-msg bot">Paz do Senhor, pastor. Em que posso ajudar no planejamento deste trimestre?</div>
+    </div>
+    <div class="ai-suggest" id="aiSuggest"></div>
+    <div class="ai-input-row">
+      <input type="text" id="aiInput" placeholder="Ex: 3 ações para o Ministério da Mulher...">
+      <button id="aiSend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<div class="bottomnav">
+  <div class="navitem active">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><path d="M9 22V12h6v10"/></svg>
+    Home
+  </div>
+  <div class="navitem">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
+    Calendário
+  </div>
+  <div class="navitem">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>
+    Metas
+  </div>
+  <div class="navitem">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+    Relatórios
+  </div>
+  <div class="navitem">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    Perfil
+  </div>
+</div>
+
+<div class="print-sheet" id="printSheet"></div>
+
+<script>
+const CONFIG = {
+  SUPABASE_URL: "", SUPABASE_ANON_KEY: "",
+  AI_WORKER_URL: "",
+};
+
+const DATA = {
+  pastor: { name: "Pr. Ricardo Guillermo", district: "Distrito: Submédio São Francisco", association: "Planejamento Distrital · Associação Bahia Norte" },
+
+  currentQuarter: { label: "4º TRIMESTRE (OUTUBRO - DEZEMBRO)" },
+
+  goals: [
+    { id:"g1", title:"BATISMO DA PRIMAVERA (OUT/NOV)", type:"tracked", done:true, totalChurches:5, doneChurches:2, actions:["Adicionar Relatório","Lista de Candidatos"] },
+    { id:"g2", title:"CAMPANHA DE VISITAÇÃO ÀS FAMÍLIAS", type:"tracked", done:false, totalChurches:4, doneChurches:1, actions:["Adicionar Relatório","Ver Igrejas"] },
+    { id:"g3", title:"PLANEJAMENTO ANUAL 2026", type:"cta", done:false, cta:"Iniciar Comissão" },
+  ],
+
+  agenda: [
+    { day:"QUARTA, 19:30", what:"Culto de Oração (Sede)" },
+    { day:"SÁBADO, 09:00", what:"Culto Divino (Igreja Alvorada)" },
+    { day:"DOMINGO, 15:00", what:"Visitação pastoral — Vista Alegre" },
+  ],
+
+  churches: [
+    { id:"c1", name:"Sede Central", status:"ok" },
+    { id:"c2", name:"Alvorada", status:"ok" },
+    { id:"c3", name:"Vista Alegre", status:"pending" },
+    { id:"c4", name:"Nova Esperança", status:"ok" },
+  ]
+};
+
+function initials(name){ return name.replace(/^(Pr\.|Pra\.)\s*/i,"").split(" ").filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase(); }
+function svgCheck(){ return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>`; }
+function svgChurch(){ return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 9 6h6Z"/><path d="M12 6v4"/><path d="M5 21V11l7-4 7 4v10"/><path d="M9 21v-5h6v5"/></svg>`; }
+
+document.getElementById("topStrip").textContent = DATA.pastor.association;
+document.getElementById("avatar").textContent = initials(DATA.pastor.name);
+document.getElementById("pastorName").textContent = DATA.pastor.name;
+document.getElementById("districtBadge").textContent = DATA.pastor.district;
+document.getElementById("quarterSubLabel").innerHTML = `<span class="dot"></span>${DATA.currentQuarter.label}`;
+
+function renderGoals(){
+  const wrap = document.getElementById("goalsWrap");
+  wrap.innerHTML = "";
+  DATA.goals.forEach(g=>{
+    const card = document.createElement("div");
+    card.className = "goal-card" + (g.done ? " done" : "");
+
+    let inner = `<div class="goal-top">
+        <div class="chk" data-id="${g.id}">${svgCheck()}</div>
+        <div class="goal-title">${g.title}</div>
+      </div>`;
+    if(g.done) inner += `<div class="gold-check">${svgCheck()}</div>`;
+
+    if(g.type === "tracked"){
+      const pct = Math.round(100*g.doneChurches/g.totalChurches);
+      inner += `
+        <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+        <div class="progress-meta">${svgCheck().replace('currentColor','none').replace('stroke-width="2.6"','stroke="#3FAE6B" stroke-width="2.6"')} ${g.doneChurches}/${g.totalChurches} Igrejas</div>
+        <div class="goal-actions">
+          <button>${g.actions[0]}</button>
+          <button class="alt">${g.actions[1]}</button>
+        </div>`;
+    } else {
+      inner += `<button class="btn-cta-gold">${g.cta}</button>`;
+    }
+    card.innerHTML = inner;
+    card.querySelector(".chk").addEventListener("click", ()=>{ g.done = !g.done; renderGoals(); });
+    wrap.appendChild(card);
+  });
+}
+renderGoals();
+
+function renderAgenda(){
+  const wrap = document.getElementById("agendaWrap");
+  wrap.innerHTML = "";
+  DATA.agenda.forEach(a=>{
+    const el = document.createElement("div");
+    el.className = "agenda-card";
+    el.innerHTML = `<div class="day">${a.day}</div><div class="what">${a.what}</div>`;
+    wrap.appendChild(el);
+  });
+}
+renderAgenda();
+
+function renderChurches(){
+  const wrap = document.getElementById("churchesWrap");
+  wrap.innerHTML = "";
+  DATA.churches.forEach(c=>{
+    const el = document.createElement("div");
+    el.className = "church-row";
+    el.innerHTML = `
+      <div class="church-icon">${svgChurch()}</div>
+      <div class="name">${c.name}<span class="status-dot ${c.status}"></span></div>
+      <button class="btn-quick">Quick Acces</button>`;
+    wrap.appendChild(el);
+  });
+}
+renderChurches();
+
+document.getElementById("saveBtn").addEventListener("click", ()=>{
+  DATA.pastor.name = "Pr. " + document.getElementById("inscInput").value.replace(/^Pr\.\s*/i,"");
+  document.getElementById("pastorName").textContent = DATA.pastor.name;
+  document.getElementById("avatar").textContent = initials(DATA.pastor.name);
+});
+
+document.getElementById("exportBtn").addEventListener("click", ()=>{
+  const sheet = document.getElementById("printSheet");
+  let html = `<h1>Plano Distrital — ${DATA.pastor.district}</h1>
+    <div class="meta">${DATA.pastor.name} · ${DATA.currentQuarter.label} · gerado em ${new Date().toLocaleDateString('pt-BR')}</div>
+    <div class="pq"><h2>Atividades atuais</h2>`;
+  DATA.goals.forEach(g=>{
+    html += `<div class="pgoal${g.done?' done':''}"><div class="box"></div><span>${g.title}</span></div>`;
+  });
+  html += `</div>`;
+  sheet.innerHTML = html;
+  window.print();
+});
+
+const aiOverlay = document.getElementById("aiOverlay");
+const aiBody = document.getElementById("aiBody");
+const aiInput = document.getElementById("aiInput");
+const SUGGESTIONS = ["3 ações para o Ministério da Mulher","Como engajar jovens inativos","Ideias de evangelismo de baixo custo","Roteiro para reunião com líderes"];
+function renderSuggestions(){
+  const wrap = document.getElementById("aiSuggest"); wrap.innerHTML = "";
+  SUGGESTIONS.forEach(s=>{ const b=document.createElement("button"); b.textContent=s; b.addEventListener("click",()=>{ aiInput.value=s; sendAiMessage(); }); wrap.appendChild(b); });
+}
+renderSuggestions();
+document.getElementById("aiFab").addEventListener("click", ()=> aiOverlay.classList.add("open"));
+document.getElementById("aiClose").addEventListener("click", ()=> aiOverlay.classList.remove("open"));
+aiOverlay.addEventListener("click",(e)=>{ if(e.target===aiOverlay) aiOverlay.classList.remove("open"); });
+function addMsg(text, who){ const el=document.createElement("div"); el.className="ai-msg "+who; el.textContent=text; aiBody.appendChild(el); aiBody.scrollTop=aiBody.scrollHeight; return el; }
+async function sendAiMessage(){
+  const text = aiInput.value.trim(); if(!text) return;
+  addMsg(text,"user"); aiInput.value="";
+  const loading = addMsg("Consultando...","loading");
+  try{
+    if(!CONFIG.AI_WORKER_URL){
+      await new Promise(r=>setTimeout(r,700));
+      loading.remove();
+      addMsg(`Sugestão (modo offline — configure CONFIG.AI_WORKER_URL): para "${text}", defina uma ação simples e replicável, com responsável e prazo, e um indicador de sucesso pra reportar na assembleia.`, "bot");
+      return;
+    }
+    const res = await fetch(CONFIG.AI_WORKER_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({district:DATA.pastor.district, question:text})});
+    const data = await res.json();
+    loading.remove(); addMsg(data.reply || "Não consegui gerar uma sugestão agora.","bot");
+  }catch(err){ loading.remove(); addMsg("Não foi possível conectar ao assistente. Verifique o Worker.","bot"); }
+}
+document.getElementById("aiSend").addEventListener("click", sendAiMessage);
+aiInput.addEventListener("keydown",(e)=>{ if(e.key==="Enter") sendAiMessage(); });
+</script>
+</body>
+</html>
+
